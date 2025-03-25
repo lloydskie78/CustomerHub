@@ -1,0 +1,35 @@
+# Laravel
+/api/vendor/
+/api/node_modules/
+/api/public/hot
+/api/public/storage
+/api/storage/*.key
+/api/.env
+/api/.env.backup
+/api/.phpunit.result.cache
+/api/docker-compose.override.yml
+/api/Homestead.json
+/api/Homestead.yaml
+/api/npm-debug.log
+/api/yarn-error.log
+
+# React
+/frontend/node_modules
+/frontend/build
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db 
