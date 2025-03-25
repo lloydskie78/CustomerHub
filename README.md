@@ -1,154 +1,132 @@
-# Customer Management System
+# CustomerHub
 
-A full-stack CRUD application for managing customer records, built with Laravel, React, and Docker.
+A modern full-stack customer management system built with Laravel, React, and Elasticsearch. Features real-time search, RESTful API, and containerized deployment.
 
-## Features
+## 🚀 Features
 
-- Create, Read, Update, and Delete customers
-- Search customers by name and email
-- Real-time search using Elasticsearch
-- Modern UI with Material-UI
+- Customer management (CRUD operations)
+- Real-time search with Elasticsearch integration
+- Modern, responsive UI with Material-UI
+- RESTful API with Laravel
 - Containerized development environment
+- Load balanced with Nginx
 
-## Tech Stack
+## 💻 Tech Stack
 
-- Backend: Laravel 8 (PHP 8.2)
-- Frontend: React with TypeScript
-- Database: MySQL 8.0
-- Search Engine: Elasticsearch 7.17.9
-- Container Orchestration: Docker & Docker Compose
-- Load Balancer: Nginx
+- **Backend**: Laravel 8 (PHP 8.2)
+- **Frontend**: React 18 with TypeScript
+- **Database**: MySQL 8.0
+- **Search Engine**: Elasticsearch 7.17.9
+- **Load Balancer**: Nginx
+- **Containerization**: Docker & Docker Compose
 
-## Prerequisites
+## 📋 Prerequisites
 
-Before you begin, ensure you have the following installed on your system:
 - Docker Desktop (latest version)
 - Git
+- Make sure ports 3000, 8000, 3306, and 9200 are available on your system
 
-## Project Structure
-
-```
-.
-├── api/                # Laravel backend
-├── frontend/          # React frontend
-├── docker/            # Docker configuration files
-└── docker-compose.yml # Docker compose configuration
-```
-
-## Installation & Setup
+## 🛠️ Installation
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd customer-management-system
+git clone https://github.com/lloydskie78/CustomerHub.git
+cd CustomerHub
 ```
 
-2. Create backend environment file:
+2. Copy environment files:
 ```bash
 cp api/.env.example api/.env
-```
-
-3. Create frontend environment file:
-```bash
 cp frontend/.env.example frontend/.env
 ```
 
-4. Start the Docker containers:
+3. Build and start the containers:
 ```bash
-# Remove any existing containers and volumes (if needed)
-docker-compose down -v
-
-# Build and start the containers
 docker-compose up -d --build
 ```
 
-The setup process will:
-- Install all dependencies
+4. The setup process will:
+- Install all dependencies (both Laravel and React)
 - Run database migrations
-- Set up Elasticsearch indices
+- Create Elasticsearch indices
 - Start all required services
 
-## Accessing the Application
+## 🌐 Accessing the Application
 
-Once all containers are running, you can access:
+Once all containers are running successfully:
 
-- Frontend Application: http://localhost:3000
-- Backend API: http://localhost:8000/api
-- Elasticsearch: http://localhost:9200
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000/api
+- **Elasticsearch**: http://localhost:9200
 
-## Available Services
+## 📦 Project Structure
 
-The application runs the following services:
+```
+.
+├── api/                 # Laravel backend
+│   ├── app/            # Application code
+│   ├── database/       # Migrations and seeders
+│   └── tests/          # Backend tests
+├── frontend/           # React frontend
+│   ├── src/            # Source code
+│   │   ├── components/ # React components
+│   │   └── services/   # API services
+│   └── public/         # Static files
+└── docker/            # Docker configuration files
+```
 
-- `api`: Laravel backend service (PHP-FPM)
-- `nginx`: Load balancer/web server
-- `mysql`: Database service
-- `elasticsearch`: Search service
-- `frontend`: React application
-
-## API Endpoints
+## 🔄 API Endpoints
 
 ### Customers
-
 - `GET /api/customers` - List all customers
 - `GET /api/customers?search=query` - Search customers
-- `GET /api/customers/{id}` - Get a specific customer
-- `POST /api/customers` - Create a new customer
-- `PUT /api/customers/{id}` - Update a customer
-- `DELETE /api/customers/{id}` - Delete a customer
+- `GET /api/customers/{id}` - Get specific customer
+- `POST /api/customers` - Create customer
+- `PUT /api/customers/{id}` - Update customer
+- `DELETE /api/customers/{id}` - Delete customer
 
-## Development
-
-### Useful Docker Commands
+## 🛠️ Development Commands
 
 ```bash
 # View container logs
 docker-compose logs -f [service-name]
 
-# Restart a specific service
-docker-compose restart [service-name]
+# Access Laravel container
+docker-compose exec api bash
 
 # Run Laravel commands
 docker-compose exec api php artisan [command]
 
-# Access MySQL CLI
+# Run database migrations
+docker-compose exec api php artisan migrate
+
+# Access MySQL
 docker-compose exec mysql mysql -u customer_user -p customer_db
 
-# View Elasticsearch indices
+# Check Elasticsearch indices
 curl http://localhost:9200/_cat/indices
 ```
 
-### Running Tests
+## 🧪 Running Tests
 
 ```bash
-# Run PHP tests
+# Backend tests
 docker-compose exec api php artisan test
 
-# Run React tests
+# Frontend tests
 docker-compose exec frontend npm test
 ```
 
-### Troubleshooting
+## 🔍 Troubleshooting
 
-If you encounter any issues:
+If you encounter issues:
 
 1. Check container status:
 ```bash
 docker-compose ps
 ```
 
-2. View container logs:
-```bash
-docker-compose logs -f api
-```
-
-3. Rebuild containers:
-```bash
-docker-compose down -v
-docker-compose up -d --build
-```
-
-4. Check service health:
+2. Verify services are healthy:
 ```bash
 # MySQL
 docker-compose exec mysql mysqladmin ping -h localhost
@@ -157,14 +135,23 @@ docker-compose exec mysql mysqladmin ping -h localhost
 curl http://localhost:9200/_cluster/health
 ```
 
-## Contributing
+3. If services are not starting:
+```bash
+# Remove all containers and volumes
+docker-compose down -v
+
+# Rebuild and start
+docker-compose up -d --build
+```
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+3. Commit your changes (`git commit -m 'feat: Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details. 
