@@ -1,0 +1,114 @@
+services:
+  # Backend API service
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes:
+      - ./api:/var/www/html:delegated
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - app-network
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=customer_db
+      - DB_USERNAME=customer_user
+      - DB_PASSWORD=customer_password
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm -t || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Nginx load balancer service
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    volumes:
+      - ./api:/var/www/html:delegated
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # MySQL database service
+  mysql:
+    image: mysql:8.0
+    platform: linux/amd64
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=customer_db
+      - MYSQL_USER=customer_user
+      - MYSQL_PASSWORD=customer_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Elasticsearch service
+  elasticsearch:
+    image: elasticsearch:7.17.9
+    platform: linux/amd64
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app:delegated
+      - /app/node_modules
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - app-network
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000/api
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  elasticsearch-data: 
